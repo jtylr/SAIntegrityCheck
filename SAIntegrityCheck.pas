@@ -13,8 +13,8 @@ type
 function mensaje (msj: string; leng: integer): String;
 begin
 	case msj of
-		'advertencia': if ( leng = 1 ) then mensaje := 'Please make sure to run this executable in your San Andreas folder. Enter 1 to continue, 0 to exit.' else mensaje := 'Por favor asegurate de estar ejecutando este programa en la carpeta de San Andreas. Ingresa 1 para continuar, 0 para salir.';
-		'cancelado': if ( leng = 1 ) then mensaje := 'The program execution has been canceled, no check has been done.' else mensaje := 'Se ha cancelado la ejecucion del programa y no se ha realizado ningun chequeo';
+		'advertencia': if ( leng = 1 ) then mensaje := 'No GTA:SA Installation found in this folder. Please run this program inside your GTA:SA directory. Execution has been cancelled.' else mensaje := 'No se ha encontrado una instalacion de GTA.SA en esta carpeta. Por favor ejecuta este archivo dentro de la carpeta de tu GTA. Ejecucion cancelada.';
+		'advertencia2': if ( leng = 1 ) then mensaje := 'The database.sicdb file has not been found. You need to put that file in the same directory as this program. Execution cannot continue without this file.' else mensaje := 'El archivo database.sicdb no se encuentra en esta carpeta. Por favor pega ese archivo en la carpeta con este programa y vuelve a ejecutarlo. La ejecucion no puede continuar.';
 		'visual': if ( leng = 1 ) then mensaje := 'Enter 1 to check essential files that could mean cheats or other unexpected effects. Press 2 to make a more complete procedure that checks files that modify visual aspect.' else mensaje := 'Ingrese 1 para hacer un chequeo de los archivos esenciales, que podrian significar cheats u otros cambios en el juego. Ingrese 2 para hacer un chequeo mas completo que incluye archivos visuales.';
 		'chequeando': if ( leng = 1 ) then mensaje := 'Executing integrity check. This can take quite a while depending on your specs.' else mensaje := 'Ejecutando chequeo de integridad. Esto puede tardar varios minutos dependiendo de tus especificaciones.';
 		'inconsistencia': if ( leng = 1 ) then mensaje := 'INCONSISTENCY FOUND IN: ' else mensaje := 'INCONSISTENCIA ENCONTRADA EN: ';
@@ -57,9 +57,9 @@ begin
 	writeln('2 - Spanish - Castellano');
 	readln(lenguaje);
 	clrscr;
-	writeln (mensaje('advertencia', lenguaje));
-	readln(i);
-	if i = 1 then begin
+	if not FileExists('database.sicdb') then writeln (mensaje('advertencia2', lenguaje))
+	else if not FileExists('gta_sa.exe') then writeln (mensaje('advertencia', lenguaje))
+	else begin
 		Assign(db, 'database.sicdb');
 		Reset(db);
 		Assign(arch, 'IntegrityReport.txt');
@@ -86,8 +86,6 @@ begin
 		end;
 		Close(arch);
 		Close(db);
-	end else begin
-		writeln (mensaje('cancelado', lenguaje));
 	end;
 	writeln (mensaje('salir', lenguaje));
 	delay (65535);
